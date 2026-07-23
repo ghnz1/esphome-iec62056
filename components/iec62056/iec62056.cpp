@@ -837,7 +837,7 @@ void IEC62056Component::wait_next_readout_() {
 
   scheduled_timestamp_set_ = false;
   if (is_periodic_readout_enabled_()) {
-    ESP_LOGD(TAG, "Waiting %u ms for the next scheduled readout (every %u ms).", actual_wait_time, update_interval_ms_);
+    ESP_LOGD(TAG, "Waiting %lu ms for the next scheduled readout (every %lu ms).", actual_wait_time, update_interval_ms_);
     wait_(actual_wait_time, BEGIN);
   } else {
     // UINT32_MAX means no update, use switch to trigger readout
