@@ -29,7 +29,7 @@ void IEC62056Component::setup() {
 #endif
 
 #ifdef USE_ESP_IDF
-  iuart_ = make_unique<IEC62056UART>(*static_cast<uart::UARTComponent *>(this->parent_));
+  iuart_ = make_unique<IEC62056UART>(*static_cast<uart::IDFUARTComponent *>(this->parent_));
 #endif
 
 #if USE_ESP8266
@@ -837,7 +837,7 @@ void IEC62056Component::wait_next_readout_() {
 
   scheduled_timestamp_set_ = false;
   if (is_periodic_readout_enabled_()) {
-    ESP_LOGD(TAG, "Waiting %lu ms for the next scheduled readout (every %lu ms).", actual_wait_time, update_interval_ms_);
+    ESP_LOGD(TAG, "Waiting %u ms for the next scheduled readout (every %u ms).", actual_wait_time, update_interval_ms_);
     wait_(actual_wait_time, BEGIN);
   } else {
     // UINT32_MAX means no update, use switch to trigger readout

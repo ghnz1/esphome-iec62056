@@ -137,9 +137,9 @@ class IEC62056UART final : public uart::ESP8266UartComponent {
 #endif
 
 #ifdef USE_ESP_IDF
-class IEC62056UART final {
+class IEC62056UART final : public uart::IDFUARTComponent {
  public:
-  explicit IEC62056UART(uart::IDFUARTComponent &uart) : uart_(uart) {}
+  IEC62056UART(uart::IDFUARTComponent &uart) : uart_(uart) {}
 
   // Reconfigure baudrate
   void update_baudrate(uint32_t baudrate) {
