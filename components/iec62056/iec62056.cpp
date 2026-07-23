@@ -29,7 +29,7 @@ void IEC62056Component::setup() {
 #endif
 
 #ifdef USE_ESP_IDF
-  iuart_ = make_unique<IEC62056UART>(*static_cast<uart::IDFUARTComponent *>(this->parent_));
+  iuart_ = make_unique<IEC62056UART>(*static_cast<uart::UARTComponent *>(this->parent_));
 #endif
 
 #if USE_ESP8266
