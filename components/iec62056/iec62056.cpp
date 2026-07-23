@@ -61,7 +61,7 @@ void IEC62056Component::dump_config() {
     // These settings are not used in Mode D
     ESP_LOGCONFIG(TAG, "  Battery meter: %s", YESNO(this->battery_meter_));
     if (this->config_baud_rate_max_bps_ > 0) {
-      ESP_LOGCONFIG(TAG, "  Max baud rate: %u bps", this->config_baud_rate_max_bps_);
+      ESP_LOGCONFIG(TAG, "  Max baud rate: %ul bps", this->config_baud_rate_max_bps_);
     } else {
       ESP_LOGCONFIG(TAG, "  Max baud rate: not limited");
     }
@@ -319,7 +319,7 @@ void IEC62056Component::loop() {
           connection_status_(false);
 
           // end of data
-          ESP_LOGD(TAG, "Total connection time: %u ms", millis() - retry_connection_start_timestamp_);
+          ESP_LOGD(TAG, "Total connection time: %ul ms", millis() - retry_connection_start_timestamp_);
 
           verify_all_sensors_got_value_();
           ESP_LOGD(TAG, "Start of sensor update");
@@ -415,7 +415,7 @@ void IEC62056Component::loop() {
 
         ESP_LOGD(TAG, "Meter reported protocol: %c", (char) mode_);
         if (mode_ != PROTOCOL_MODE_A) {
-          ESP_LOGD(TAG, "Meter reported max baud rate: %u bps ('%c')",
+          ESP_LOGD(TAG, "Meter reported max baud rate: %ul bps ('%c')",
                    identification_to_baud_rate_(baud_rate_identification_), baud_rate_identification_);
         }
         set_next_state_(PREPARE_ACK);
@@ -444,9 +444,9 @@ void IEC62056Component::loop() {
         }
 
         baud_rate_char = baud_rate_to_identification_(negotiated_bps);
-        ESP_LOGD(TAG, "Using negotiated baud rate %d bps.", negotiated_bps);
+        ESP_LOGD(TAG, "Using negotiated baud rate %ld bps.", negotiated_bps);
       } else {
-        ESP_LOGD(TAG, "Using meter maximum baud rate %d bps ('%c').",
+        ESP_LOGD(TAG, "Using meter maximum baud rate %ld bps ('%c').",
                  identification_to_baud_rate_(baud_rate_identification_), baud_rate_identification_);
         baud_rate_char = baud_rate_identification_;
       }
@@ -458,7 +458,7 @@ void IEC62056Component::loop() {
         } else if (baud_rate_char < PROTO_C_RANGE_BEGIN) {
           baud_rate_char = PROTO_C_RANGE_BEGIN;
         }
-        ESP_LOGD(TAG, "Decreased baud rate for retry %u to: %d bps ('%c').", retry_counter_,
+        ESP_LOGD(TAG, "Decreased baud rate for retry %u to: %ld bps ('%c').", retry_counter_,
                  identification_to_baud_rate_(baud_rate_char), baud_rate_char);
       }
 
@@ -476,7 +476,7 @@ void IEC62056Component::loop() {
       break;
 
     case SET_BAUD_RATE:
-      ESP_LOGD(TAG, "Switching to new baud rate %u bps ('%c')", new_baudrate, baud_rate_char);
+      ESP_LOGD(TAG, "Switching to new baud rate %lu bps ('%c')", new_baudrate, baud_rate_char);
       update_baudrate_(new_baudrate);
       set_next_state_(WAIT_FOR_STX);
       break;
@@ -503,7 +503,7 @@ void IEC62056Component::loop() {
       if ((frame_size = receive_frame_())) {
         // ETX is the first byte (the way receive_frame_() works and \r\n in data)
         if (in_buf_[0] == ETX) {
-          ESP_LOGD(TAG, "Total connection time: %u ms", millis() - retry_connection_start_timestamp_);
+          ESP_LOGD(TAG, "Total connection time: %lu ms", millis() - retry_connection_start_timestamp_);
           // include ETX (but exclude STX)
           lrc_ ^= ETX;  // faster than update_lrc_(in_buf_,1);
           bool bcc_failed = false;
@@ -797,7 +797,7 @@ void IEC62056Component::retry_or_sleep_() {
     wait_next_readout_();
   } else {
     retry_counter_inc_();
-    ESP_LOGD(TAG, "Retry %d of %d. Waiting %u ms before the next try", retry_counter_, max_retries_, retry_delay_);
+    ESP_LOGD(TAG, "Retry %d of %d. Waiting %lu ms before the next try", retry_counter_, max_retries_, retry_delay_);
     wait_(retry_delay_, BEGIN);
   }
 }
